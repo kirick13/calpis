@@ -47,9 +47,13 @@ function preciseFloat(number, precision = 2) {
 export function timing(time_start = 0) {
 	const time = Bun.nanoseconds() - time_start;
 
-	if (time < 1_000_000_000) {
-		return `[${preciseFloat(time / 1_000_000)} ms]`;
+	if (time < 1_000_000) {
+		return `${preciseFloat(time / 1000)} µs`;
 	}
 
-	return `[${preciseFloat(time / 1_000_000_000)} s]`;
+	if (time < 1_000_000_000) {
+		return `${preciseFloat(time / 1_000_000)} ms`;
+	}
+
+	return `${preciseFloat(time / 1_000_000_000)} s`;
 }
