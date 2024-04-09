@@ -2,21 +2,23 @@
 import {
     gzip,
 	pipeline,
-	read,
 	use,
+	read,
     write } from '../src/main.js';
+import { minifyHtml } from './calpis/declarations.js';
 
-export const html = pipeline(
+export const build = pipeline(
 	read(
 		{ base: 'source' },
 		'**/*.html',
 	),
-	// use((calpisFile) => {
-	// 	console.log(calpisFile);
-	// }),
-	write('build'),
+	minifyHtml(),
+	use((calpisFile) => {
+		calpisFile.location.ext = '.min.html';
+	}),
+	write('build-calpis'),
 	gzip({
 		level: 9,
 	}),
-	write('build'),
+	write('build-calpis'),
 );

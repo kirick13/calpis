@@ -1,0 +1,5 @@
+
+.eslintrc.cjs
+test/
+**/*.test.js
+bun.lockb

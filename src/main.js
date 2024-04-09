@@ -31,6 +31,20 @@ export function pipeline(...tasks) {
 }
 
 /**
+ * Invokes a callback function for each file.
+ * @param {(CalpisFile) => Promise<any>} callback - Callback function. If returns a CalpisFile object, it will be used as the new file. If returns null, the file will be skipped.
+ * @returns {CalpisTask} -
+ */
+export function use(callback) {
+	return {
+		module: () => import('./modules/use.js'),
+		args: [
+			callback,
+		],
+	};
+}
+
+/**
  * Reads files using globs.
  * @overload
  * @param {{ base_path: string|undefined }} options? -
@@ -47,20 +61,6 @@ export function read(...args) {
 	return {
 		module: () => import('./modules/read.js'),
 		args,
-	};
-}
-
-/**
- * Invokes a callback function for each file.
- * @param {(CalpisFile) => Promise<any>} callback - Callback function. If returns a CalpisFile object, it will be used as the new file. If returns null, the file will be skipped.
- * @returns {CalpisTask} -
- */
-export function use(callback) {
-	return {
-		module: () => import('./modules/use.js'),
-		args: [
-			callback,
-		],
 	};
 }
 

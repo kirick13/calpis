@@ -1,7 +1,7 @@
 
 # Calpis
 
-Calpis is lightweight, native and fast Gulp alternative. It is **8x faster** than Gulp on NodeJS and **4x faster** than Gulp on Bun.
+Calpis is lightweight, native and fast Gulp alternative. It is **2.24x faster** than Gulp.
 
 > **Note:** This project is in early development stage.
 > It works only with [Bun](https://bun.sh) to achieve maximum performance.
@@ -125,14 +125,11 @@ Calpis uses Web Streams API — and core part of Calpis modules is [TransformStr
 
 Surprisingly, Calpis does not have any dependencies.
 
-> TODO
-> Update this section with actual data
-
 | | `gulp@4.0.2` | `calpis@0.1.0` | Difference |
 | --- | --- | --- | --- |
-| Packages installed | 336 | 2 | **99% less** |
-| `node_modules` size | ≈ 8 433 389 bytes | ≈ 105 589 bytes | **98% smaller** |
-| Time to compile EJS, minify HTML and Gzip | 203.6 ms with Bun <br> 376.1 ms with NodeJS | 42.2 ms | **4.83x faster** <br> **8.92x faster** |
+| Packages installed | 583 | 1 | **99.9% less** |
+| `node_modules` size | ≈ 6 709 336 bytes | ≈ 30 994 bytes | **99.6% smaller** |
+| Time to minify HTML and Gzip | 866.6 ms ± 7.9 ms | 386.1 ms ± 2.8 ms | **2.24x faster** |
 
 ### Bun
 

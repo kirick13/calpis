@@ -9,9 +9,9 @@ import {
 import { CalpisFileLocation } from './file/location.js';
 
 export class CalpisFile {
-	TYPE_ARRAY_BUFFER = TYPE_ARRAY_BUFFER;
-	TYPE_STRING = TYPE_STRING;
-	TYPE_NODEJS_BUFFER = TYPE_NODEJS_BUFFER;
+	static AS_ARRAY_BUFFER = TYPE_ARRAY_BUFFER;
+	static AS_STRING = TYPE_STRING;
+	static AS_NODEJS_BUFFER = TYPE_NODEJS_BUFFER;
 
 	location;
 	contents;
