@@ -9,9 +9,15 @@ import { minifyHtml } from './calpis/declarations.js';
 
 export const build = pipeline(
 	read(
-		{ base: 'source' },
+		{
+			base: 'source',
+			dotfiles: true,
+		},
 		'**/*.html',
+		'!**/_*.html',
+		'!**/*.org.html',
 	),
+	// use((file) => console.log(file.location.path)),
 	minifyHtml(),
 	use((calpisFile) => {
 		calpisFile.location.ext = '.min.html';

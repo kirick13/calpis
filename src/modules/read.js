@@ -14,7 +14,8 @@ const GLOBS_DEFAULT_NEGATED = [
  */
 function matchAllGlobs(path, globs) {
 	for (const glob of globs) {
-		if (glob.match(path) !== true) {
+		// console.log('match', path, glob.match('./' + path));
+		if (glob.match('./' + path) !== true) {
 			return false;
 		}
 	}
@@ -37,9 +38,11 @@ function matchAllGlobs(path, globs) {
  */
 export default async function read(...globs_raw) {
 	let base_path = '.';
+	let dotfiles = false;
 	if (globs_raw[0] instanceof Object) {
 		({
 			base: base_path = '.',
+			dotfiles = false,
 		} = globs_raw.shift());
 	}
 
@@ -57,12 +60,20 @@ export default async function read(...globs_raw) {
 			globs.push(glob);
 		}
 	}
+	// console.log('globs', globs);
+	// console.log('globs_negated', globs_negated);
+
+	const glob_scan_options = {
+		cwd: base_path,
+		dot: dotfiles,
+	};
+	// console.log(glob_scan_options);
 
 	const paths = new Set();
 	const paths_array = [];
 	for (const glob of globs) {
 		// eslint-disable-next-line no-await-in-loop
-		for await (const path of glob.scan(base_path)) {
+		for await (const path of glob.scan(glob_scan_options)) {
 			if (
 				paths.has(path) !== true
 				&& matchAllGlobs(path, globs_negated)
