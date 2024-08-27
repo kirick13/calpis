@@ -5,6 +5,7 @@ export default [
 	{
 		rules: {
 			'no-restricted-exports': 'off',
+			'n/hashbang': 'off',
 			'n/no-unsupported-features/node-builtins': [
 				'error',
 				{

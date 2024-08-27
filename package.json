@@ -1,6 +1,6 @@
 {
 	"name": "calpis",
-	"version": "0.2.0-beta.5",
+	"version": "0.2.0-beta.6",
 	"description": "Lightweight and fast Gulp alternative.",
 	"publishConfig": {
 		"access": "public"
@@ -9,9 +9,6 @@
 	"main": "dist/esm/main.js",
 	"types": "dist/esm/main.d.ts",
 	"bin": "dist/esm/cli.js",
-	"files": [
-		"dist"
-	],
 	"engines": {
 		"node": ">=14.13.1"
 	},

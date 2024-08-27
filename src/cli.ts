@@ -1,3 +1,5 @@
+#!/usr/bin/env bun
+
 /* eslint-disable no-console */
 
 import nodePath      from 'node:path';
@@ -38,7 +40,7 @@ async function readConfig(): Promise<[string, Record<string, CalpisTask>]> {
 		'[calpis]',
 		'Configuration file not found.',
 	);
-	// eslint-disable-next-line n/no-process-exit, unicorn/no-process-exit
+	// eslint-disable-next-line n/no-process-exit
 	process.exit(1);
 
 	throw new Error('Unreachable');
@@ -57,7 +59,7 @@ if (CONFIG[task] === undefined) {
 		`Task "${task}" not found in file ${CONFIG_FILE_NAME}.`,
 	);
 
-	// eslint-disable-next-line n/no-process-exit, unicorn/no-process-exit
+	// eslint-disable-next-line n/no-process-exit
 	process.exit(1);
 }
 
@@ -82,7 +84,7 @@ if (!readable) {
 		`Task "${task}" did not return a readable stream.`,
 	);
 
-	// eslint-disable-next-line n/no-process-exit, unicorn/no-process-exit
+	// eslint-disable-next-line n/no-process-exit
 	process.exit(1);
 }
 
@@ -107,10 +109,10 @@ console.log(
 if (error !== undefined) {
 	console.error(error);
 
-	// eslint-disable-next-line n/no-process-exit, unicorn/no-process-exit
+	// eslint-disable-next-line n/no-process-exit
 	process.exit(1);
 }
 
 // force process to exit
-// eslint-disable-next-line n/no-process-exit, unicorn/no-process-exit
-process.exit();
+// eslint-disable-next-line n/no-process-exit
+process.exit(0);
