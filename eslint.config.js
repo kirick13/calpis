@@ -11,8 +11,10 @@ export default [
 				{
 					ignores: [
 						'ReadableStream',
+						'ReadableStreamDefaultReader',
 						'TransformStream',
 						'WritableStream',
+						'WritableStreamDefaultWriter',
 					],
 				},
 			],

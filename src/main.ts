@@ -19,11 +19,27 @@ export function createTask<const M extends CalpisTaskModule, const A extends unk
 }
 
 /**
+ * Adds condition to the pipeline.
+ * @param condition - Condition to check, may be a getter function.
+ * @param consequent - Tasks to run if the condition is true.
+ * @param alternate - Tasks to run if the condition is false.
+ * @returns -
+ */
+export const conditional = createTask(() => import('./modules/conditional'));
+
+/**
  * Compresses files using gzip.
  * @param options - Options for `Bun.gzipSync` method.
  * @returns -
  */
 export const gzip = createTask(() => import('./modules/gzip'));
+
+/**
+ * Executes tasks in parallel.
+ * @param args - Tasks declarations.
+ * @returns -
+ */
+export const parallel = createTask(() => import('./modules/parallel'));
 
 /**
  * Creates pipeline of tasks.

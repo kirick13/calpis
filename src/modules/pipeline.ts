@@ -1,22 +1,18 @@
-import { type CalpisFile } from '../file';
+import { type CalpisFile }        from '../file';
 import {
 	runTask,
 	type CalpisTask,
-}                          from '../task';
-
-interface CalpisPipelineTaskResult {
-	writable: WritableStream<CalpisFile> | null;
-	readable: ReadableStream<CalpisFile> | null;
-}
+	type CalpisTaskStreamsResult,
+}                                 from '../task';
 
 /**
  * Creates pipeline of tasks.
  * @param args - Tasks declarations.
  * @returns -
  */
-export default async function pipeline(...args: CalpisTask[]): Promise<CalpisPipelineTaskResult> {
-	let writable = null;
-	let readable = null;
+export default async function pipeline(...args: CalpisTask[]): Promise<CalpisTaskStreamsResult> {
+	let writable: WritableStream<CalpisFile> | null = null;
+	let readable: ReadableStream<CalpisFile> | null = null;
 
 	const tasks_promises = [];
 	for (const task of args) {
@@ -33,18 +29,28 @@ export default async function pipeline(...args: CalpisTask[]): Promise<CalpisPip
 				writable = task_result.writable;
 			}
 			else if (readable === null) {
-				throw new Error('Invalid pipeline: got WritableStream, but there are no ReadableStream to pipe.');
+				throw new Error('Invalid pipeline: got WritableStream, but there is no ReadableStream to pipe.');
+			}
+			else if (task_result.readable instanceof ReadableStream) {
+				readable.pipeTo(task_result.writable);
 			}
 			else {
-				readable.pipeTo(task_result.writable);
+				const [
+					readable1,
+					readable2,
+				]: [
+					ReadableStream<CalpisFile>,
+					ReadableStream<CalpisFile>,
+				] = readable.tee();
+
+				readable1.pipeTo(task_result.writable);
+
+				readable = readable2;
 			}
 		}
 
 		if (task_result.readable instanceof ReadableStream) {
 			readable = task_result.readable;
-		}
-		else {
-			readable = null;
 		}
 	}
 

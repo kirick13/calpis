@@ -7,27 +7,25 @@ export interface CalpisTask {
 }
 export interface CalpisTaskModule {
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	default: (...args: any[]) => MaybePromise<
-		ReadableStream<CalpisFile>
-		| WritableStream<CalpisFile>
-		| TransformStream<CalpisFile, CalpisFile>
-		| {
-			writable: WritableStream<CalpisFile> | null,
-			readable: ReadableStream<CalpisFile> | null,
-		}
-	>;
+	default: (...args: any[]) => CalpisTaskResult;
 }
-export interface CalpisTaskResult {
+export interface CalpisTaskStreamsResult {
 	writable: WritableStream<CalpisFile> | null;
 	readable: ReadableStream<CalpisFile> | null;
 }
+export type CalpisTaskResult = MaybePromise<
+	ReadableStream<CalpisFile>
+	| WritableStream<CalpisFile>
+	| TransformStream<CalpisFile, CalpisFile>
+	| CalpisTaskStreamsResult
+>;
 
 /**
  * Runs a task.
  * @param task -
  * @returns - The writable and readable streams.
  */
-export async function runTask(task: CalpisTask): Promise<CalpisTaskResult> {
+export async function runTask(task: CalpisTask): Promise<CalpisTaskStreamsResult> {
 	const task_module = await task.module();
 	const result = await task_module.default(...task.args);
 

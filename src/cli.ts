@@ -43,7 +43,7 @@ async function readConfig(): Promise<[string, Record<string, CalpisTask>]> {
 	// eslint-disable-next-line n/no-process-exit
 	process.exit(1);
 
-	throw new Error('Unreachable');
+	throw new Error('Unreachable.');
 }
 
 const [

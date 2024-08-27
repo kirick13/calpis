@@ -1,6 +1,6 @@
 {
 	"name": "calpis",
-	"version": "0.2.0-beta.6",
+	"version": "0.2.0-beta.7",
 	"description": "Lightweight and fast Gulp alternative.",
 	"publishConfig": {
 		"access": "public"
@@ -27,7 +27,8 @@
 		"-- compare-gulp-bun": "cd test && rm -rf build-gulp && bunx --bun gulp@4.0.2 -f gulpfile.cjs build",
 		"-- compare-calpis": "cd test && bun run ../src/exec.js build",
 		"-- compare": "cd test && hyperfine 'bunx calpis@0.1.0-beta.2 build' 'npx gulp@4.0.2 -f gulpfile.cjs build' --warmup=5",
-		"lint": "eslint . && tsc --skipLibCheck --noemit"
+		"lint": "eslint . && tsc --skipLibCheck --noemit",
+		"test": "cd test ; bun run ../src/cli.ts test"
 	},
 	"repository": {
 		"type": "git",
