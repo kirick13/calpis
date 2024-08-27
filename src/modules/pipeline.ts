@@ -1,22 +1,25 @@
+import { type CalpisFile } from '../file';
+import {
+	runTask,
+	type CalpisTask,
+}                          from '../task';
 
-/**
- * @typedef {import('../file.js').CalpisFile} CalpisFile
- * @typedef {import('../run-task.js').CalpisTask} CalpisTask
- */
-
-import { runTask } from '../run-task.js';
+interface CalpisPipelineTaskResult {
+	writable: WritableStream<CalpisFile> | null;
+	readable: ReadableStream<CalpisFile> | null;
+}
 
 /**
  * Creates pipeline of tasks.
- * @param {...CalpisTask} tasks - Tasks declarations.
- * @returns {{ writable: WritableStream<CalpisFile> | null, readable: ReadableStream<CalpisFile> | null }} -
+ * @param args - Tasks declarations.
+ * @returns -
  */
-export default async function pipeline(...tasks) {
+export default async function pipeline(...args: CalpisTask[]): Promise<CalpisPipelineTaskResult> {
 	let writable = null;
 	let readable = null;
 
 	const tasks_promises = [];
-	for (const task of tasks) {
+	for (const task of args) {
 		tasks_promises.push(
 			runTask(task),
 		);

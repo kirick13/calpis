@@ -1,5 +1,5 @@
-
 .DS_Store
-node_modules*
-test/source
-test/build-*
+node_modules
+
+# ignore dist because it uses Actions
+dist/

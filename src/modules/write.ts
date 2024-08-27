@@ -1,14 +1,12 @@
 
-/**
- * @typedef {import('./file').CalpisFile} CalpisFile
- */
+import { type CalpisFile } from '../file';
 
 /**
  * Write file to disk using new base path.
- * @param {string} base_path - Base path.
- * @returns {TransformStream<CalpisFile>} -
+ * @param base_path - Base path.
+ * @returns -
  */
-export default function write(base_path) {
+export default function write(base_path: string): TransformStream<CalpisFile> {
 	return new TransformStream({
 		async transform(calpisFile, controller) {
 			const calpisFileCopy = calpisFile.clone();
