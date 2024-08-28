@@ -12,7 +12,7 @@ jobs:
       id-token: write
     steps:
       - uses: actions/checkout@v4
-      - uses: kirick13/build-npm-package-action@a1fab7c7dfd9f143bc1f53357006c32ae95b38e2
+      - uses: kirick13/build-npm-package-action@v1
         with:
           npm-token: ${{ secrets.NPM_TOKEN }}
       - uses: kirick13/notify-action@v1
