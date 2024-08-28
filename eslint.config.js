@@ -10,6 +10,7 @@ export default [
 				'error',
 				{
 					ignores: [
+						// 'promise-withresolvers',
 						'ReadableStream',
 						'ReadableStreamDefaultReader',
 						'TransformStream',

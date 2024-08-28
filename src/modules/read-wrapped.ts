@@ -15,7 +15,7 @@ export function read(...globs: string[]): CalpisTask;
  */
 export function read(options: ReadOptions, ...globs: string[]): CalpisTask;
 // eslint-disable-next-line jsdoc/require-jsdoc
-export function read(...args: [ ReadOptions | string, ...string[] ]) {
+export function read(...args: [ ReadOptions | string, ...string[] ]): CalpisTask {
 	return {
 		module: () => import('./read'),
 		args,

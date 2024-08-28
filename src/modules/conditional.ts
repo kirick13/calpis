@@ -29,8 +29,5 @@ export default function conditional(
 		return runTask(alternate);
 	}
 
-	return {
-		readable: null,
-		writable: null,
-	};
+	return new TransformStream<CalpisFile, CalpisFile>();
 }

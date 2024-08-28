@@ -11,8 +11,12 @@ import {
  * @returns -
  */
 export default async function pipeline(...args: CalpisTask[]): Promise<CalpisTaskStreamsResult> {
-	let writable: WritableStream<CalpisFile> | null = null;
-	let readable: ReadableStream<CalpisFile> | null = null;
+	if (args.length === 0) {
+		return new TransformStream<CalpisFile>();
+	}
+
+	let writable: WritableStream<CalpisFile>;
+	let readable: ReadableStream<CalpisFile>;
 
 	const tasks_promises = [];
 	for (const task of args) {
@@ -24,34 +28,19 @@ export default async function pipeline(...args: CalpisTask[]): Promise<CalpisTas
 	const tasks_results = await Promise.all(tasks_promises);
 
 	for (const [ index, task_result ] of tasks_results.entries()) {
-		if (task_result.writable instanceof WritableStream) {
-			if (index === 0) {
-				writable = task_result.writable;
-			}
-			else if (readable === null) {
-				throw new Error('Invalid pipeline: got WritableStream, but there is no ReadableStream to pipe.');
-			}
-			else if (task_result.readable instanceof ReadableStream) {
-				readable.pipeTo(task_result.writable);
-			}
-			else {
-				const [
-					readable1,
-					readable2,
-				]: [
-					ReadableStream<CalpisFile>,
-					ReadableStream<CalpisFile>,
-				] = readable.tee();
-
-				readable1.pipeTo(task_result.writable);
-
-				readable = readable2;
-			}
+		if (index === 0) {
+			writable = task_result.writable;
+		}
+		else {
+			readable!.pipeTo(task_result.writable);
 		}
 
-		if (task_result.readable instanceof ReadableStream) {
-			readable = task_result.readable;
-		}
+		readable = task_result.readable;
+	}
+
+	// stupid TypeScript hack
+	if (!writable! || !readable!) {
+		throw new Error('Unreachable.');
 	}
 
 	return {

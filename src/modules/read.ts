@@ -1,5 +1,9 @@
-import { Glob }             from 'bun';
-import { createCalpisFile } from '../file';
+import { Glob }                         from 'bun';
+import {
+	CalpisFile,
+	createCalpisFile,
+}                                       from '../file';
+import { type CalpisTaskStreamsResult } from '../task';
 
 const GLOBS_DEFAULT_NEGATED = [
 	new Bun.Glob('!node_modules/**'),
@@ -36,16 +40,16 @@ export interface ReadOptions {
  * @param globs - Globs to read.
  * @returns -
  */
-export default async function read(...globs: string[]): Promise<ReadableStream>;
+export default async function read(...globs: string[]): Promise<CalpisTaskStreamsResult>;
 /**
  * Reads files using globs.
  * @param options -
  * @param globs - Globs to read.
  * @returns -
  */
-export default async function read(options: ReadOptions, ...globs: string[]): Promise<ReadableStream>;
+export default async function read(options: ReadOptions, ...globs: string[]): Promise<CalpisTaskStreamsResult>;
 // eslint-disable-next-line jsdoc/require-jsdoc
-export default async function read(...args_given: [ ReadOptions | string, ...string[] ]): Promise<ReadableStream> {
+export default async function read(...args_given: [ ReadOptions | string, ...string[] ]): Promise<CalpisTaskStreamsResult> {
 	let base_path = '.';
 	let dotfiles = false;
 
@@ -101,7 +105,16 @@ export default async function read(...args_given: [ ReadOptions | string, ...str
 	// console.log('base_path', base_path);
 	// console.log('paths', paths);
 
-	return new ReadableStream({
+	const {
+		promise,
+		resolve,
+	// eslint-disable-next-line n/no-unsupported-features/es-syntax
+	} = Promise.withResolvers<Bun.ReadableStreamController<CalpisFile>>();
+
+	const readable = new ReadableStream<CalpisFile>({
+		start(controller) {
+			resolve(controller);
+		},
 		async pull(controller) {
 			const path = paths_array.shift();
 
@@ -118,4 +131,17 @@ export default async function read(...args_given: [ ReadOptions | string, ...str
 			}
 		},
 	});
+
+	const controller = await promise;
+
+	const writable = new WritableStream<CalpisFile>({
+		write(file) {
+			controller.enqueue(file);
+		},
+	});
+
+	return {
+		writable,
+		readable,
+	};
 }

@@ -7,7 +7,7 @@ import { type CalpisFile } from '../file';
  * @returns -
  */
 export default function write(base_path: string) {
-	return new TransformStream<CalpisFile>({
+	return new TransformStream<CalpisFile, CalpisFile>({
 		async transform(file, controller) {
 			const calpisFileCopy = file.clone();
 			calpisFileCopy.location.base = base_path;

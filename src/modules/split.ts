@@ -6,11 +6,11 @@ import {
 }                                 from '../task';
 
 /**
- * Executes tasks in parallel.
+ * Splits stream into streams executing in parallel. All files coming out from these streams will be merged together.
  * @param args - Tasks declarations.
  * @returns -
  */
-export default async function parallel(...args: CalpisTask[]): Promise<CalpisTaskStreamsResult> {
+export default async function split(...args: CalpisTask[]): Promise<CalpisTaskStreamsResult> {
 	const promises = [];
 	for (const task of args) {
 		promises.push(
@@ -19,9 +19,7 @@ export default async function parallel(...args: CalpisTask[]): Promise<CalpisTas
 	}
 
 	const result = await Promise.all(promises);
-	// const writables: WritableStream<CalpisFile>[] = [];
 	const writers: WritableStreamDefaultWriter<CalpisFile>[] = [];
-	// const readables: ReadableStream<CalpisFile>[] = [];
 	const readers: ReadableStreamDefaultReader<CalpisFile>[] = [];
 
 	for (
@@ -30,19 +28,13 @@ export default async function parallel(...args: CalpisTask[]): Promise<CalpisTas
 			writable,
 		} of result
 	) {
-		if (readable) {
-			// readables.push(readable);
-			readers.push(
-				readable.getReader() as ReadableStreamDefaultReader<CalpisFile>,
-			);
-		}
+		writers.push(
+			writable.getWriter(),
+		);
 
-		if (writable) {
-			// writables.push(writable);
-			writers.push(
-				writable.getWriter(),
-			);
-		}
+		readers.push(
+			readable.getReader() as ReadableStreamDefaultReader<CalpisFile>,
+		);
 	}
 
 	// console.log('readers', readers);
@@ -51,17 +43,15 @@ export default async function parallel(...args: CalpisTask[]): Promise<CalpisTas
 	return {
 		writable: new WritableStream<CalpisFile>({
 			async write(file) {
-				console.log('[write]', file.location.path);
-
 				await Promise.all(
 					writers.map(
-						(writer) => writer.write(file),
+						(writer) => writer.write(
+							file.clone(),
+						),
 					),
 				);
 			},
 			async close() {
-				console.log('close');
-
 				await Promise.all(
 					writers.map(
 						(writer) => writer.close(),

@@ -10,15 +10,28 @@ export interface CalpisTaskModule {
 	default: (...args: any[]) => CalpisTaskResult;
 }
 export interface CalpisTaskStreamsResult {
-	writable: WritableStream<CalpisFile> | null;
-	readable: ReadableStream<CalpisFile> | null;
+	writable: WritableStream<CalpisFile>;
+	readable: ReadableStream<CalpisFile>;
 }
 export type CalpisTaskResult = MaybePromise<
-	ReadableStream<CalpisFile>
-	| WritableStream<CalpisFile>
 	| TransformStream<CalpisFile, CalpisFile>
 	| CalpisTaskStreamsResult
 >;
+
+/**
+ * Creates a task from a module.
+ * Useful for TypeScript type inference, but cannot be used with functions with overloads.
+ * @param module - Getter of a module to create task from.
+ * @returns -
+ */
+export function createTask<const M extends CalpisTaskModule, const A extends unknown[] = Parameters<M['default']>>(module: () => Promise<M>): (...args: A) => CalpisTask {
+	return (...args: A) => {
+		return {
+			module,
+			args,
+		};
+	};
+}
 
 /**
  * Runs a task.
@@ -29,33 +42,8 @@ export async function runTask(task: CalpisTask): Promise<CalpisTaskStreamsResult
 	const task_module = await task.module();
 	const result = await task_module.default(...task.args);
 
-	let writable = null;
-	let readable = null;
-
-	if (result instanceof WritableStream) {
-		writable = result;
-	}
-	else if (result instanceof ReadableStream) {
-		readable = result;
-	}
-	else if (
-		result instanceof TransformStream
-		|| (
-			result.writable instanceof WritableStream
-			|| result.readable instanceof ReadableStream
-		)
-	) {
-		({
-			writable,
-			readable,
-		} = result);
-	}
-	else {
-		throw new TypeError('Invalid task result.');
-	}
-
 	return {
-		writable,
-		readable,
+		writable: result.writable,
+		readable: result.readable,
 	};
 }

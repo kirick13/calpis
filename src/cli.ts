@@ -2,19 +2,16 @@
 
 /* eslint-disable no-console */
 
-import nodePath      from 'node:path';
-import { PATH_ROOT } from './constants';
-import {
-	runTask,
-	type CalpisTask,
-}                    from './task';
-import { timing }    from './utils';
+import nodePath           from 'node:path';
+import { PATH_ROOT }      from './constants';
+import { timing }         from './utils';
+import { type CalpisJob } from './job';
 
 /**
  * Reads the configuration file.
  * @returns -
  */
-async function readConfig(): Promise<[string, Record<string, CalpisTask>]> {
+async function readConfig(): Promise<[string, Record<string, CalpisJob>]> {
 	for (const filename of [
 		'calpis.config.js',
 		'calpis.config.cjs',
@@ -51,12 +48,13 @@ const [
 	CONFIG,
 ] = await readConfig();
 
-const task = process.argv[2] ?? 'default';
+const job_name = process.argv[2] ?? 'default';
+const jobFn = CONFIG[job_name];
 
-if (CONFIG[task] === undefined) {
+if (jobFn === undefined) {
 	console.error(
 		'[calpis]',
-		`Task "${task}" not found in file ${CONFIG_FILE_NAME}.`,
+		`Job "${job_name}" not found in file ${CONFIG_FILE_NAME}.`,
 	);
 
 	// eslint-disable-next-line n/no-process-exit
@@ -71,47 +69,23 @@ console.log(
 const ts_start = Bun.nanoseconds();
 console.log(
 	'[calpis]',
-	`Started task "${task}"...`,
+	`Started job "${job_name}"...`,
 );
 
-const { readable } = await runTask(
-	CONFIG[task],
-);
-
-if (!readable) {
-	console.error(
-		'[calpis]',
-		`Task "${task}" did not return a readable stream.`,
-	);
-
-	// eslint-disable-next-line n/no-process-exit
-	process.exit(1);
+try {
+	await jobFn();
 }
-
-const error = await new Promise((resolve) => {
-	readable.pipeTo(
-		new WritableStream({
-			close() {
-				resolve(undefined);
-			},
-			abort(stream_error) {
-				resolve(stream_error);
-			},
-		}),
-	);
-});
-
-console.log(
-	'[calpis]',
-	`Task completed in ${timing(ts_start)}.`,
-);
-
-if (error !== undefined) {
+catch (error) {
 	console.error(error);
 
 	// eslint-disable-next-line n/no-process-exit
 	process.exit(1);
 }
+
+console.log(
+	'[calpis]',
+	`Task completed in ${timing(ts_start)}.`,
+);
 
 // force process to exit
 // eslint-disable-next-line n/no-process-exit
