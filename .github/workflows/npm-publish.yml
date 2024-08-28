@@ -12,19 +12,9 @@ jobs:
       id-token: write
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: kirick13/build-npm-package-action@a1fab7c7dfd9f143bc1f53357006c32ae95b38e2
         with:
-          node-version: 20
-          registry-url: https://registry.npmjs.org/
-      - uses: oven-sh/setup-bun@v2
-        with:
-          bun-version: 1.1.26
-      - run: bun i
-      - run: bun run build
-      - run: bun run lint
-      - run: npm publish --provenance --access public
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          npm-token: ${{ secrets.NPM_TOKEN }}
       - uses: kirick13/notify-action@v1
         with:
           telegram-bot-token: ${{ secrets.TELEGRAM_BOT_TOKEN }}
