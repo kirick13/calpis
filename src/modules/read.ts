@@ -111,6 +111,9 @@ export default async function read(...args_given: [ ReadOptions | string, ...str
 	// eslint-disable-next-line n/no-unsupported-features/es-syntax
 	} = Promise.withResolvers<Bun.ReadableStreamController<CalpisFile>>();
 
+	let is_writable_closed = false;
+	let is_readable_closed = false;
+
 	const readable = new ReadableStream<CalpisFile>({
 		start(controller) {
 			resolve(controller);
@@ -127,7 +130,11 @@ export default async function read(...args_given: [ ReadOptions | string, ...str
 				controller.enqueue(file);
 			}
 			else {
-				controller.close();
+				is_readable_closed = true;
+
+				if (is_writable_closed && is_readable_closed) {
+					controller.close();
+				}
 			}
 		},
 	});
@@ -137,6 +144,13 @@ export default async function read(...args_given: [ ReadOptions | string, ...str
 	const writable = new WritableStream<CalpisFile>({
 		write(file) {
 			controller.enqueue(file);
+		},
+		close() {
+			is_writable_closed = true;
+
+			if (is_writable_closed && is_readable_closed) {
+				controller.close();
+			}
 		},
 	});
 

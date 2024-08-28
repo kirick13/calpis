@@ -153,3 +153,14 @@ export const test_parallel = parallel(
 	test_txt,
 	test_js,
 );
+
+export const test_multi_reads = job(
+	read('src/**/*.js'),
+	use(() => new Promise((resolve) => {
+		setTimeout(resolve, 100);
+	})),
+	read('src/**/*.txt'),
+	use((file) => {
+		log('[result]', file.location.path);
+	}),
+);

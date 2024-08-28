@@ -15,7 +15,13 @@ export function job(...tasks: CalpisTask[]): CalpisJob {
 	const task = pipeline(...tasks);
 
 	return async function () {
-		const { readable } = await runTask(task);
+		const {
+			writable,
+			readable,
+		} = await runTask(task);
+
+		writable.getWriter().close();
+
 		const reader = readable.getReader();
 
 		while (true) {
