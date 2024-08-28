@@ -62,3 +62,28 @@ export function timing(time_start: number = 0): string {
 
 	return `${preciseFloat(time / 1_000_000_000)} s`;
 }
+
+/**
+ * Logs the standard message with the colored arguments.
+ * @param args - The arguments to be logged.
+ */
+export function log(...args: (string | { name: string } | { time: string })[]) {
+	console.log(
+		'\u001B[0m\u001B[1m\u001B[34m[calpis]\u001B[0m',
+		args.map((arg) => {
+			if (typeof arg === 'string') {
+				return arg;
+			}
+
+			if ('name' in arg) {
+				return `"\u001B[32m${arg.name}\u001B[0m"`;
+			}
+
+			if ('time' in arg) {
+				return `\u001B[33m${arg.time}\u001B[0m`;
+			}
+
+			return '';
+		}).join(''),
+	);
+}

@@ -2,10 +2,16 @@
 
 /* eslint-disable no-console */
 
-import nodePath           from 'node:path';
-import { PATH_ROOT }      from './constants';
-import { timing }         from './utils';
-import { type CalpisJob } from './job';
+import nodePath      from 'node:path';
+import { PATH_ROOT } from './constants';
+import {
+	log,
+	timing,
+}                    from './utils';
+import {
+	JOB_NAMES,
+	type CalpisJob,
+}                    from './job';
 
 /**
  * Reads the configuration file.
@@ -61,16 +67,22 @@ if (jobFn === undefined) {
 	process.exit(1);
 }
 
-console.log(
-	'[calpis]',
-	`Initialization complete in ${timing()}.`,
+for (const [ field, value ] of Object.entries(CONFIG)) {
+	if (typeof value === 'function') {
+		JOB_NAMES.set(
+			value,
+			field,
+		);
+	}
+}
+
+log(
+	'Initialization complete in ',
+	{ time: timing() },
+	'.',
 );
 
 const ts_start = Bun.nanoseconds();
-console.log(
-	'[calpis]',
-	`Started job "${job_name}"...`,
-);
 
 try {
 	await jobFn();
@@ -82,9 +94,10 @@ catch (error) {
 	process.exit(1);
 }
 
-console.log(
-	'[calpis]',
-	`Task completed in ${timing(ts_start)}.`,
+log(
+	'Completed in ',
+	{ time: timing(ts_start) },
+	'.',
 );
 
 // force process to exit

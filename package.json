@@ -1,22 +1,35 @@
 {
 	"name": "calpis",
-	"version": "0.2.0-beta.9",
-	"description": "Lightweight and fast Gulp alternative.",
-	"publishConfig": {
-		"access": "public"
+	"version": "0.2.0-beta.10",
+	"author": "Daniil Kirichenko (https://twitter.com/kirickme)",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/kirick13/calpis.git"
 	},
-	"type": "module",
 	"main": "dist/esm/main.js",
-	"types": "dist/esm/main.d.ts",
-	"bin": "dist/esm/cli.js",
-	"engines": {
-		"node": ">=14.13.1"
-	},
 	"devDependencies": {
 		"@kirick/eslint-config": "0.1.28",
 		"@types/bun": "^1.1",
 		"eslint": "9.8.0",
 		"typescript": "5.5.4"
+	},
+	"bin": "dist/esm/cli.js",
+	"bugs": {
+		"url": "https://github.com/kirick13/calpis/issues"
+	},
+	"description": "Lightweight and fast Gulp alternative.",
+	"engines": {
+		"node": ">=14.13.1"
+	},
+	"homepage": "https://github.com/kirick13/calpis#readme",
+	"keywords": [
+		"calpis",
+		"build",
+		"gulp"
+	],
+	"license": "MIT",
+	"publishConfig": {
+		"access": "public"
 	},
 	"scripts": {
 		"build": "bun run build:cjs && bun run build:ts",
@@ -30,19 +43,6 @@
 		"lint": "eslint . && tsc --skipLibCheck --noemit",
 		"test": "cd test ; bun run ../src/cli.ts"
 	},
-	"repository": {
-		"type": "git",
-		"url": "git+https://github.com/kirick13/calpis.git"
-	},
-	"keywords": [
-		"calpis",
-		"build",
-		"gulp"
-	],
-	"author": "Daniil Kirichenko (https://twitter.com/kirickme)",
-	"license": "MIT",
-	"bugs": {
-		"url": "https://github.com/kirick13/calpis/issues"
-	},
-	"homepage": "https://github.com/kirick13/calpis#readme"
+	"type": "module",
+	"types": "dist/esm/main.d.ts"
 }

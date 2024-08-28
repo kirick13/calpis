@@ -3,8 +3,42 @@ import {
 	runTask,
 	type CalpisTask,
 }                    from './task';
+import {
+	timing,
+	log,
+}                    from './utils';
 
 export type CalpisJob = () => Promise<void>;
+
+export const JOB_NAMES = new Map<CalpisJob, string>();
+
+// eslint-disable-next-line jsdoc/require-jsdoc
+function wrapJob(fnGiven: CalpisJob): CalpisJob {
+	// eslint-disable-next-line jsdoc/require-jsdoc
+	async function fn() {
+		const fn_name = JOB_NAMES.get(fn) ?? '???';
+
+		log(
+			'Started job ',
+			{ name: fn_name },
+			'...',
+		);
+
+		const ts_start = Bun.nanoseconds();
+
+		await fnGiven();
+
+		log(
+			'Finished job ',
+			{ name: fn_name },
+			' in ',
+			{ time: timing(ts_start) },
+			'.',
+		);
+	}
+
+	return fn;
+}
 
 /**
  * Creates job to run tasks.
@@ -14,7 +48,7 @@ export type CalpisJob = () => Promise<void>;
 export function job(...tasks: CalpisTask[]): CalpisJob {
 	const task = pipeline(...tasks);
 
-	return async function () {
+	return wrapJob(async () => {
 		const {
 			writable,
 			readable,
@@ -32,7 +66,7 @@ export function job(...tasks: CalpisTask[]): CalpisJob {
 				break;
 			}
 		}
-	};
+	});
 }
 
 /**
@@ -41,7 +75,7 @@ export function job(...tasks: CalpisTask[]): CalpisJob {
  * @returns -
  */
 export function sequence(...jobs: CalpisJob[]): CalpisJob {
-	return function () {
+	return wrapJob(() => {
 		let promise = Promise.resolve();
 
 		for (const job_this of jobs) {
@@ -49,7 +83,7 @@ export function sequence(...jobs: CalpisJob[]): CalpisJob {
 		}
 
 		return promise;
-	};
+	});
 }
 
 /**
@@ -58,11 +92,11 @@ export function sequence(...jobs: CalpisJob[]): CalpisJob {
  * @returns -
  */
 export function parallel(...jobs: CalpisJob[]): CalpisJob {
-	return async function () {
+	return wrapJob(async () => {
 		await Promise.all(
 			jobs.map(
 				(job_this) => job_this(),
 			),
 		);
-	};
+	});
 }
