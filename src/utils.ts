@@ -68,6 +68,7 @@ export function timing(time_start: number = 0): string {
  * @param args - The arguments to be logged.
  */
 export function log(...args: (string | { name: string } | { time: string })[]) {
+	// eslint-disable-next-line no-console
 	console.log(
 		'\u001B[0m\u001B[1m\u001B[34m[calpis]\u001B[0m',
 		args.map((arg) => {

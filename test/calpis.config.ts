@@ -1,9 +1,7 @@
-/* eslint-disable func-style */
 /* eslint-disable no-console */
 /* eslint-disable jsdoc/require-jsdoc */
 
 import {
-	type CalpisFile,
 	conditional,
 	createTask,
 	isolatedPipeline,
@@ -15,62 +13,6 @@ import {
 	split,
 	use,
 } from '../src/main';
-
-// export const test = pipeline(
-// 	read('src/**/*'),
-// 	use((file) => {
-// 		console.log('[start]', file.location.path);
-// 	}),
-// 	// conditional(
-// 	// 	process.env.CONDITION === '1',
-// 	// 	use((file) => {
-// 	// 		console.log('[condition] TRUE', file.location.path);
-// 	// 	}),
-// 	// 	use((file) => {
-// 	// 		console.log('[condition] FALSE', file.location.path);
-// 	// 	}),
-// 	// ),
-// 	pipeline(
-// 	// parallel(
-// 	// isolatedPipeline(
-// 		use(async (file) => {
-// 			console.log('[step 1] start', file.location.path);
-
-// 			await new Promise((resolve) => {
-// 				setTimeout(resolve, 100);
-// 			});
-
-// 			console.log('[step 1] end', file.location.path);
-// 		}),
-// 		use(async (file) => {
-// 			console.log('[step 2] start', file.location.path);
-
-// 			await new Promise((resolve) => {
-// 				setTimeout(resolve, 100);
-// 			});
-
-// 			console.log('[step 2] end', file.location.path);
-// 		}),
-// 	),
-// 	// createTask(() => Promise.resolve({
-// 	// 	default() {
-// 	// 		return new TransformStream<CalpisFile, CalpisFile>({
-// 	// 			transform(file) {
-// 	// 				console.log('[transform]', file.location.path);
-// 	// 			},
-// 	// 		});
-// 	// 	},
-// 	// }))(),
-// 	use((file) => {
-// 		console.log('[complete]', file.location.path);
-// 	}),
-// 	// scss(OPTIONS_SCSS),
-// 	// autoprefixer(),
-// 	// cleanCss(OPTIONS_CLEANCSS),
-// 	// write('work/dist/css'),
-// 	// gzip(OPTIONS_GZIP),
-// 	// write('work/dist/css'),
-// );
 
 function log(...args: unknown[]) {
 	console.log(
